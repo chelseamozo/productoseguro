@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AppParcial2.Models;
+using AppParcial2.Services;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +8,11 @@ namespace AppParcial2.ViewModels
 {
     class CountryViewModel:BaseViewModel
     {
+        #region Services
+        private ApiService apiService;
+        #endregion
+
+
         #region Attributes
         private string name;
         private string alpha2code;
@@ -36,14 +43,23 @@ namespace AppParcial2.ViewModels
         #region Constructor
         public CountryViewModel()
         {
+            apiService = new ApiService();
             this.LoadCountry();
         }
         #endregion
         #region Methods
 
-        private void LoadCountry()
+        private async void LoadCountry()
         {
-            
+            var country = await this.apiService.Get<Country>(
+                "https://restcountries.eu/rest/v2/",
+                "name/",
+                "bolivia"
+                );
+            this.Name = country[0].Name;
+            this.Capital = country[0].Capital;
+            this.Alpha2Code = country[0].Alpha2Code;
+
         }
         #endregion
     }
